@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLambdaLogger", "src\SimpleLambdaLogger\SimpleLambdaLogger.csproj", "{87487D86-6B30-4735-BE9F-501C4A46171D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E2E9A999-DE68-490E-9B9F-B409556A8FA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLambdaLogger.Unit.Tests", "tests\SimpleLambdaLogger.Unit.Tests\SimpleLambdaLogger.Unit.Tests.csproj", "{6F86008A-E45C-48C1-A390-83BA365CE9E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleLambdaLogger.Benchmarks", "tests\SimpleLambdaLogger.Benchmarks\SimpleLambdaLogger.Benchmarks.csproj", "{AAAC9848-F2E7-4DB9-86B0-9E0242FE8184}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,17 @@ Global
 		{87487D86-6B30-4735-BE9F-501C4A46171D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87487D86-6B30-4735-BE9F-501C4A46171D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87487D86-6B30-4735-BE9F-501C4A46171D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F86008A-E45C-48C1-A390-83BA365CE9E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F86008A-E45C-48C1-A390-83BA365CE9E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F86008A-E45C-48C1-A390-83BA365CE9E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F86008A-E45C-48C1-A390-83BA365CE9E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAAC9848-F2E7-4DB9-86B0-9E0242FE8184}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAAC9848-F2E7-4DB9-86B0-9E0242FE8184}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAAC9848-F2E7-4DB9-86B0-9E0242FE8184}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAAC9848-F2E7-4DB9-86B0-9E0242FE8184}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6F86008A-E45C-48C1-A390-83BA365CE9E1} = {E2E9A999-DE68-490E-9B9F-B409556A8FA2}
+		{AAAC9848-F2E7-4DB9-86B0-9E0242FE8184} = {E2E9A999-DE68-490E-9B9F-B409556A8FA2}
 	EndGlobalSection
 EndGlobal

@@ -6,12 +6,14 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+
 namespace SimpleLambdaLogger
 {
     internal class LoggerScope : BaseLoggerScope
     {
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-        
+
         private readonly LogEventLevel _scopeLogLevel;
 
         private bool WriteLogs => _maxLogLevel >= _scopeLogLevel || ChildScopes.Any(childScope => childScope.WriteLogs);
@@ -25,7 +27,7 @@ namespace SimpleLambdaLogger
         public ICollection<LogEvent> Logs { get; } = new List<LogEvent>();
 
         public long Duration => _stopwatch.ElapsedMilliseconds;
-        
+
         public LoggerScope(
             string scopeName,
             string? contextId,
@@ -49,7 +51,8 @@ namespace SimpleLambdaLogger
         {
             _maxLogLevel = logEventLevel > _maxLogLevel ? logEventLevel : _maxLogLevel;
 
-            if (args != null && args.Length > 0 && !string.IsNullOrEmpty(message))
+            // todo: improve formatting
+            if (args.Length > 0 && !string.IsNullOrEmpty(message))
             {
                 message = string.Format(message, args);
             }

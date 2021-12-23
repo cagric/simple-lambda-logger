@@ -17,7 +17,7 @@ namespace SimpleLambdaLogger
             }
         };
 
-        internal static readonly AsyncLocal<BaseLoggerScope> CurrentScope = new AsyncLocal<BaseLoggerScope>();
+        internal static readonly AsyncLocal<BaseLoggerScope> CurrentScope = new();
 
         private static long _invocationCount = 0;
 
