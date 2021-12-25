@@ -17,7 +17,7 @@ namespace SimpleLambdaLogger
             }
         };
 
-        internal static readonly AsyncLocal<BaseLoggerScope> CurrentScope = new();
+        internal static readonly AsyncLocal<BaseScope> CurrentScope = new();
 
         private static long _invocationCount = 0;
 
@@ -45,9 +45,9 @@ namespace SimpleLambdaLogger
                 _invocationCount++;
             }
 
-            BaseLoggerScope scope = _loggingRate != 1 && _invocationCount % _loggingRate != 0
-                ? new SilentLoggerScope(CurrentScope.Value)
-                : new LoggerScope(scopeName, contextId, scopeLogLevel, CurrentScope.Value);
+            BaseScope scope = _loggingRate != 1 && _invocationCount % _loggingRate != 0
+                ? new SilentScope(CurrentScope.Value)
+                : new DefaultScope(scopeName, contextId, scopeLogLevel, CurrentScope.Value);
             CurrentScope.Value = scope;
 
             return scope;

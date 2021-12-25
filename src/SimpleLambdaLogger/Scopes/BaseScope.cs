@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
 namespace SimpleLambdaLogger
 {
-    internal abstract class BaseLoggerScope : ILoggerScope
+    internal abstract class BaseScope : ILoggerScope
     {
-        protected BaseLoggerScope ParentScope;
+        protected BaseScope ParentScope;
 
-        public ICollection<LoggerScope> ChildScopes { get; } = new List<LoggerScope>();
+        public ICollection<DefaultScope> ChildScopes { get; } = new List<DefaultScope>();
         
         public abstract void Log(LogEventLevel logEventLevel, string message, params object[] args);
 

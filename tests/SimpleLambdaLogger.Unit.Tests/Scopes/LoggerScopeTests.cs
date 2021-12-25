@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using FluentAssertions;
 using Moq;
@@ -10,25 +11,25 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
     {
         [Theory,AutoMoqData]
         internal void Log_WithLogEvent_ShouldAddLogToLogsCollection(
-            LoggerScope sut,
+            DefaultScope sut,
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel,
-            BaseLoggerScope parentScope,
+            BaseScope parentScope,
             LogEvent logEvent
         )
         {
-            sut.Log(logEvent.LogEventLevel, logEvent.Exception, logEvent.Message);
+            sut.Log(LogEventLevel.Critical, new Exception("exception"), "error message");
             sut.Logs.Count.Should().Be(1);
         }
         
         [Theory,AutoMoqData]
         internal void Log_WithLogEvents_ShouldAddLogToLogsCollection(
-            LoggerScope sut,
+            DefaultScope sut,
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel,
-            BaseLoggerScope parentScope,
+            BaseScope parentScope,
             LogEvent[] logEvents
         )
         {
@@ -36,7 +37,7 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
             for (int i = 0; i < count; i++)
             {
                 var logEvent = logEvents[i];
-                sut.Log(logEvent.LogEventLevel, logEvent.Exception, logEvent.Message);    
+                sut.Log(LogEventLevel.Critical, new Exception("exception"), "error message");    
             }
             
             sut.Logs.Count.Should().Be(count);
@@ -44,11 +45,11 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
         
         [Theory,AutoMoqData]
         internal void Log_WithLogEvents_ShouldFormatAndLogMessage(
-            LoggerScope sut,
+            DefaultScope sut,
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel,
-            BaseLoggerScope parentScope
+            BaseScope parentScope
         )
         {
             var messageTemplate = "Message with 3 parameters: {0}, {1} and {2}";
@@ -70,8 +71,8 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
             LogEventLevel scopeLogLevel
             )
         {
-            var parentScope = new Mock<BaseLoggerScope>();
-            var sut = new LoggerScope(scopeName, contextId, scopeLogLevel, parentScope.Object);
+            var parentScope = new Mock<BaseScope>();
+            var sut = new DefaultScope(scopeName, contextId, scopeLogLevel, parentScope.Object);
             sut.Dispose();
 
             SimpleLogger.CurrentScope.Value.Should().Be(parentScope.Object);
@@ -84,7 +85,7 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
             LogEventLevel scopeLogLevel
             )
         {
-            var sut = new LoggerScope(scopeName, contextId, scopeLogLevel, null);
+            var sut = new DefaultScope(scopeName, contextId, scopeLogLevel, null);
             sut.Dispose();
         
             SimpleLogger.CurrentScope.Value.Should().BeNull();

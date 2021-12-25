@@ -8,19 +8,19 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
 {
     public class SilentLoggerScopeTests
     {
-        private readonly SilentLoggerScope _sut;
+        private readonly SilentScope _sut;
 
         public SilentLoggerScopeTests()
         {
-            Mock<SilentLoggerScope> parentScope = new Mock<SilentLoggerScope>();
-            _sut = new SilentLoggerScope(parentScope.Object);
+            Mock<SilentScope> parentScope = new Mock<SilentScope>();
+            _sut = new SilentScope(parentScope.Object);
         }
 
         [Fact]
         public void Dispose_WithParentScope_ShouldSetCurrentScope()
         {
-            var parentScope = new Mock<BaseLoggerScope>();
-            SilentLoggerScope sut = new SilentLoggerScope(parentScope.Object);
+            var parentScope = new Mock<BaseScope>();
+            SilentScope sut = new SilentScope(parentScope.Object);
             sut.Dispose();
 
             SimpleLogger.CurrentScope.Value.Should().Be(parentScope.Object);
@@ -29,7 +29,7 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
         [Fact]
         public void Dispose_WithoutParentScope_ShouldSetCurrentScopeAsNull()
         {
-            SilentLoggerScope sut = new SilentLoggerScope(null);
+            SilentScope sut = new SilentScope(null);
             sut.Dispose();
 
             SimpleLogger.CurrentScope.Value.Should().BeNull();

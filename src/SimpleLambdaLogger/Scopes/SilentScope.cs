@@ -5,13 +5,13 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace SimpleLambdaLogger
 {
-    internal class SilentLoggerScope : BaseLoggerScope
+    internal class SilentScope : BaseScope
     {
-        public SilentLoggerScope()
+        public SilentScope()
         {
         }
         
-        public SilentLoggerScope(BaseLoggerScope parentScope)
+        public SilentScope(BaseScope parentScope)
         {
             ParentScope = parentScope;
         }
