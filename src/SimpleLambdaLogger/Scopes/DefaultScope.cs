@@ -62,14 +62,7 @@ namespace SimpleLambdaLogger
         public override void Log(LogEventLevel logEventLevel, Exception exception, string message, params object[] args)
         {
             _maxLogLevel = logEventLevel > _maxLogLevel ? logEventLevel : _maxLogLevel;
-
-            // todo: improve formatting
-            if (args.Length > 0 && !string.IsNullOrEmpty(message))
-            {
-                message = string.Format(message, args);
-            }
-
-            var logEvent = new LogEvent(logEventLevel, DateTimeOffset.Now, message, exception);
+            var logEvent = new LogEvent(logEventLevel, DateTimeOffset.Now, message, exception, args);
             Logs.Add(logEvent);
         }
 
@@ -115,9 +108,16 @@ namespace SimpleLambdaLogger
                     builder.AppendFormat("{{\"level\": \"{0}\",", LogLevelsLookup[log.LogEventLevel]);
                     builder.AppendFormat("\"created\": \"{0}\"", log.Timestamp.ToString());
 
-                    if (!string.IsNullOrEmpty(log.Message))
+                    if (!string.IsNullOrEmpty(log.MessageTemplate))
                     {
-                        builder.AppendFormat(",\"message\": \"{0}\"", log.Message);
+                        if (log.Args != null && log.Args.Length > 0)
+                        {
+                            builder.AppendFormat(",\"message\": \"{0}\"", string.Format(log.MessageTemplate, log.Args));   
+                        }
+                        else
+                        {
+                            builder.AppendFormat(",\"message\": \"{0}\"", log.MessageTemplate);   
+                        }
                     }
 
                     if (log.Exception != null)

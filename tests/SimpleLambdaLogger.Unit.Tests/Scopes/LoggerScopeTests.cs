@@ -54,14 +54,13 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
         {
             var messageTemplate = "Message with 3 parameters: {0}, {1} and {2}";
             var arguments = new object[3] {"parameter 1", "parameter 2", "parameter 3" };
-            var expected = string.Format(messageTemplate, arguments);
-            
+
             sut.Log(LogEventLevel.Information, messageTemplate, arguments);
 
             sut.Logs.Count.Should().Be(1);
             var actual = sut.Logs.FirstOrDefault();
             actual.Should().NotBeNull();
-            actual.Message.Should().Be(expected);
+            actual.MessageTemplate.Should().Be(messageTemplate);
         }
         
         [Theory,AutoMoqData]

@@ -10,21 +10,25 @@ namespace SimpleLambdaLogger
         public LogEvent(
             LogEventLevel logEventLevel,
             DateTimeOffset timestamp,
-            string message,
-            Exception exception)
+            string messageTemplate,
+            Exception exception,
+            params object[] args)
         {
             LogEventLevel = logEventLevel;
             Timestamp = timestamp;
-            Message = message;
+            MessageTemplate = messageTemplate;
             Exception = exception;
+            Args = args;
         }
 
         public LogEventLevel LogEventLevel { get; }
 
-        public string Message { get; }
+        public string MessageTemplate { get; }
 
         public DateTimeOffset Timestamp { get; }
 
         public Exception Exception { get; }
+        
+        public object[] Args { get; }
     }
 }
