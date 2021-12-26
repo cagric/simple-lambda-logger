@@ -1,9 +1,9 @@
-using System;
 using System.Runtime.CompilerServices;
+using SimpleLambdaLogger.Events;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-namespace SimpleLambdaLogger
+namespace SimpleLambdaLogger.Scopes
 {
     internal class SilentScope : BaseScope
     {

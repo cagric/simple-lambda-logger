@@ -1,6 +1,6 @@
-using System;
+using SimpleLambdaLogger.Events;
 
-namespace SimpleLambdaLogger
+namespace SimpleLambdaLogger.Scopes
 {
     public interface ILoggerScope : IDisposable
     {

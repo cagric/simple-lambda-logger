@@ -1,35 +1,19 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
-using System.Web;
+using SimpleLambdaLogger.Events;
+using SimpleLambdaLogger.Formatters;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
-namespace SimpleLambdaLogger
+namespace SimpleLambdaLogger.Scopes
 {
     internal class DefaultScope : BaseScope
     {
-        private static Dictionary<LogEventLevel, string> LogLevelsLookup = new()
-        {
-            {LogEventLevel.Trace, "Trace"},
-            {LogEventLevel.Debug, "Debug"},
-            {LogEventLevel.Information, "Information"},
-            {LogEventLevel.Warning, "Warning"},
-            {LogEventLevel.Error, "Error"},
-            {LogEventLevel.Critical, "Critical"}
-        };
-        
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-
+        private readonly ILogFormatter _formatter;
         private readonly LogEventLevel _scopeLogLevel;
-
         private bool WriteLogs => _maxLogLevel >= _scopeLogLevel || ChildScopes.Any(childScope => childScope.WriteLogs);
-
         private LogEventLevel _maxLogLevel;
 
         public string Name { get; protected set; }
@@ -41,11 +25,13 @@ namespace SimpleLambdaLogger
         public long Duration => _stopwatch.ElapsedMilliseconds;
 
         public DefaultScope(
+            ILogFormatter formatter,
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel,
             BaseScope parentScope)
         {
+            _formatter = formatter;
             Name = scopeName;
             ContextId = contextId;
             _scopeLogLevel = scopeLogLevel;
@@ -81,77 +67,10 @@ namespace SimpleLambdaLogger
                 return;
             }
 
-            var builder = new StringBuilder();
-            CreateLog(builder, this);
-            var result = builder.ToString();
-            Console.WriteLine(result);
+            var logMessage = _formatter.For(this);
+            Console.WriteLine(logMessage);
 
             SimpleLogger.CurrentScope.Value = null; // memory leaks without this line.
-        }
-
-        private StringBuilder CreateLog(StringBuilder builder, DefaultScope scope)
-        {
-            builder.AppendFormat("{{\"scope\": \"{0}\",", scope.Name);
-            builder.AppendFormat("\"duration\": {0}", scope.Duration.ToString());
-
-            if (!string.IsNullOrEmpty(scope.ContextId))
-            {
-                builder.AppendFormat(",\"contextId\": \"{0}\"", scope.ContextId);
-            }
-
-            if (scope.Logs.Count > 0)
-            {
-                builder.Append(",\"logs\": [");
-                for (var i = 0; i < scope.Logs.Count; i++)
-                {
-                    var log = scope.Logs.ElementAt(i);
-                    builder.AppendFormat("{{\"level\": \"{0}\",", LogLevelsLookup[log.LogEventLevel]);
-                    builder.AppendFormat("\"created\": \"{0}\"", log.Timestamp.ToString());
-
-                    if (!string.IsNullOrEmpty(log.MessageTemplate))
-                    {
-                        if (log.Args != null && log.Args.Length > 0)
-                        {
-                            builder.AppendFormat(",\"message\": \"{0}\"", string.Format(log.MessageTemplate, log.Args));   
-                        }
-                        else
-                        {
-                            builder.AppendFormat(",\"message\": \"{0}\"", log.MessageTemplate);   
-                        }
-                    }
-
-                    if (log.Exception != null)
-                    {
-                        builder.AppendFormat(",\"exception\": \"{0}\"", HttpUtility.JavaScriptStringEncode(log.Exception.ToString()));
-                    }
-                    builder.Append("}");
-                    if (i < scope.Logs.Count - 1)
-                    {
-                        builder.Append(",");
-                    }
-                }
-
-                builder.Append("]");
-            }
-
-            if (scope.ChildScopes.Any())
-            {
-                builder.Append(",\"childScopes\":[");
-            
-                for (int i = 0; i < scope.ChildScopes.Count; i++)
-                {
-                    var currentChildScope = scope.ChildScopes.ElementAt(i);
-                    CreateLog(builder, currentChildScope);
-                    if (i < scope.ChildScopes.Count - 1)
-                    {
-                        builder.Append(",");
-                    }
-                }
-                
-                builder.Append("]");
-            }
-            builder.Append("}");
-            return builder;
         }
     }
 }

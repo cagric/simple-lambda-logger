@@ -1,4 +1,6 @@
 using System;
+using SimpleLambdaLogger.Events;
+using SimpleLambdaLogger.Scopes;
 
 namespace SimpleLambdaLogger
 {

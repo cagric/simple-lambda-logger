@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Attributes;
+using SimpleLambdaLogger.Events;
 
 namespace SimpleLambdaLogger.Benchmarks
 {

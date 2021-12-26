@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using SimpleLambdaLogger.Events;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
-namespace SimpleLambdaLogger
+namespace SimpleLambdaLogger.Scopes
 {
     internal abstract class BaseScope : ILoggerScope
     {

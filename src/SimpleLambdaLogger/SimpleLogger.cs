@@ -1,22 +1,13 @@
 using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
+using SimpleLambdaLogger.Events;
+using SimpleLambdaLogger.Formatters;
+using SimpleLambdaLogger.Scopes;
 
 namespace SimpleLambdaLogger
 {
     public static class SimpleLogger
     {
-        internal static readonly JsonSerializerOptions SerializationOptions = new()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters =
-            {
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-            }
-        };
-
         internal static readonly AsyncLocal<BaseScope> CurrentScope = new();
 
         private static long _invocationCount = 0;
@@ -47,7 +38,7 @@ namespace SimpleLambdaLogger
 
             BaseScope scope = _loggingRate != 1 && _invocationCount % _loggingRate != 0
                 ? new SilentScope(CurrentScope.Value)
-                : new DefaultScope(scopeName, contextId, scopeLogLevel, CurrentScope.Value);
+                : new DefaultScope(new JsonLogFormatter() ,scopeName, contextId, scopeLogLevel, CurrentScope.Value);
             CurrentScope.Value = scope;
 
             return scope;

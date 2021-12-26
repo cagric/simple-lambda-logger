@@ -1,9 +1,8 @@
-using System;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
 
-namespace SimpleLambdaLogger
+namespace SimpleLambdaLogger.Events
 {
     internal class LogEvent
     {

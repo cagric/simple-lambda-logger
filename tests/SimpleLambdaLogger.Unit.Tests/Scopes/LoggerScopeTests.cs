@@ -2,6 +2,9 @@ using System;
 using System.Linq;
 using FluentAssertions;
 using Moq;
+using SimpleLambdaLogger.Events;
+using SimpleLambdaLogger.Formatters;
+using SimpleLambdaLogger.Scopes;
 using SimpleLambdaLogger.Unit.Tests.Data;
 using Xunit;
 
@@ -64,27 +67,29 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
         }
         
         [Theory,AutoMoqData]
-        public void Dispose_WithParentScope_ShouldSetCurrentScope(
+        internal void Dispose_WithParentScope_ShouldSetCurrentScope(
+            ILogFormatter formatter,
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel
             )
         {
             var parentScope = new Mock<BaseScope>();
-            var sut = new DefaultScope(scopeName, contextId, scopeLogLevel, parentScope.Object);
+            var sut = new DefaultScope(formatter, scopeName, contextId, scopeLogLevel, parentScope.Object);
             sut.Dispose();
 
             SimpleLogger.CurrentScope.Value.Should().Be(parentScope.Object);
         }
         
         [Theory,AutoMoqData]
-        public void Dispose_WithoutParentScope_ShouldSetCurrentScopeAsNull(
+        internal void Dispose_WithoutParentScope_ShouldSetCurrentScopeAsNull(
+            ILogFormatter formatter,
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel
             )
         {
-            var sut = new DefaultScope(scopeName, contextId, scopeLogLevel, null);
+            var sut = new DefaultScope(formatter, scopeName, contextId, scopeLogLevel, null);
             sut.Dispose();
         
             SimpleLogger.CurrentScope.Value.Should().BeNull();

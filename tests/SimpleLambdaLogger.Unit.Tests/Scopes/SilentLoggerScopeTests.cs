@@ -1,6 +1,8 @@
 using System;
 using FluentAssertions;
 using Moq;
+using SimpleLambdaLogger.Events;
+using SimpleLambdaLogger.Scopes;
 using SimpleLambdaLogger.Unit.Tests.Data;
 using Xunit;
 

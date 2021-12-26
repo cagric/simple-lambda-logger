@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SimpleLambdaLogger.Events;
 
 namespace SimpleLambdaLogger.Unit.Tests.Data
 {

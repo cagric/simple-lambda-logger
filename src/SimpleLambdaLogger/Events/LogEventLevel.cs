@@ -1,4 +1,4 @@
-namespace SimpleLambdaLogger
+namespace SimpleLambdaLogger.Events
 {
     public enum LogEventLevel
     {
