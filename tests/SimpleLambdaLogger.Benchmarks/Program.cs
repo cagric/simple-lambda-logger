@@ -5,4 +5,13 @@ using System.Text.Json;
 using BenchmarkDotNet.Running;
 using SimpleLambdaLogger.Benchmarks;
 
-var summary = BenchmarkRunner.Run<DefaultLoggingRate>();
+namespace SimpleLambdaLogger.Benchmarks
+{
+    class Program
+    {
+        public static void Main()
+        {
+            BenchmarkRunner.Run<DefaultLoggingRate>();
+        }
+    }
+}
