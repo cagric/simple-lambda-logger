@@ -1,23 +1,14 @@
 using System;
 using System.Threading;
 using SimpleLambdaLogger.Events;
-using SimpleLambdaLogger.Formatters;
 using SimpleLambdaLogger.Scopes;
 
 namespace SimpleLambdaLogger
 {
-    public static class SimpleLogger
+    public class SimpleLogger
     {
-        internal static readonly AsyncLocal<BaseScope> CurrentScope = new();
-
-        private static long _invocationCount = 0;
-
-        private static long _loggingRate = 1;
-
-        private static LogEventLevel _minLogLevel = LogEventLevel.Error;
-
         public static void Configure(
-            LogEventLevel logLevel,
+            LogEventLevel logLevel = LogEventLevel.Error,
             long loggingRate = 1)
         {
             if (loggingRate < 1)
@@ -25,63 +16,47 @@ namespace SimpleLambdaLogger
                 throw new ArgumentException(nameof(loggingRate));
             }
 
-            _minLogLevel = logLevel;
-            _loggingRate = loggingRate;
+            LoggingContext.Initialize(logLevel, loggingRate);
         }
 
-        private static ILoggerScope CreateScope(string scopeName, string? contextId, LogEventLevel scopeLogLevel)
+        public static IScope BeginScope<TScope>()
         {
-            if (CurrentScope.Value == null)
-            {
-                _invocationCount++;
-            }
-
-            BaseScope scope = _loggingRate != 1 && _invocationCount % _loggingRate != 0
-                ? new SilentScope(CurrentScope.Value)
-                : new DefaultScope(new JsonLogFormatter() ,scopeName, contextId, scopeLogLevel, CurrentScope.Value);
-            CurrentScope.Value = scope;
-
-            return scope;
+            return LoggingContext.CreateScope(typeof(TScope).Name, null);
         }
 
-        public static ILoggerScope BeginScope<TScope>()
+        public static IScope BeginScope(string scope)
         {
-            return CreateScope(typeof(TScope).Name, null, _minLogLevel);
+            return LoggingContext.CreateScope(scope, null);
         }
 
-        public static ILoggerScope BeginScope(string scope)
+        public static IScope BeginScope<TScope>(string? contextId)
         {
-            return CreateScope(scope, null, _minLogLevel);
+            return LoggingContext.CreateScope(typeof(TScope).Name, contextId);
         }
 
-        public static ILoggerScope BeginScope<TScope>(string? contextId)
+        public static IScope BeginScope(string scope, string? contextId)
         {
-            return CreateScope(typeof(TScope).Name, contextId, _minLogLevel);
+            return LoggingContext.CreateScope(scope, contextId);
         }
 
-        public static ILoggerScope BeginScope(string scope, string? contextId)
+        public static IScope BeginScope<TScope>(LogEventLevel scopeLogLevel)
         {
-            return CreateScope(scope, contextId, _minLogLevel);
+            return LoggingContext.CreateScope(typeof(TScope).Name, null, scopeLogLevel);
         }
 
-        public static ILoggerScope BeginScope<TScope>(LogEventLevel scopeLogLevel)
+        public static IScope BeginScope(string scope, LogEventLevel scopeLogLevel)
         {
-            return CreateScope(typeof(TScope).Name, null, scopeLogLevel);
+            return LoggingContext.CreateScope(scope, null, scopeLogLevel);
         }
 
-        public static ILoggerScope BeginScope(string scope, LogEventLevel scopeLogLevel)
+        public static IScope BeginScope<TScope>(string? contextId, LogEventLevel scopeLogLevel)
         {
-            return CreateScope(scope, null, scopeLogLevel);
+            return LoggingContext.CreateScope(typeof(TScope).Name, contextId, scopeLogLevel);
         }
 
-        public static ILoggerScope BeginScope<TScope>(string? contextId, LogEventLevel scopeLogLevel)
+        public static IScope BeginScope(string scope, string? contextId, LogEventLevel scopeLogLevel)
         {
-            return CreateScope(typeof(TScope).Name, contextId, scopeLogLevel);
-        }
-
-        public static ILoggerScope BeginScope(string scope, string? contextId, LogEventLevel scopeLogLevel)
-        {
-            return CreateScope(scope, contextId, scopeLogLevel);
+            return LoggingContext.CreateScope(scope, contextId, scopeLogLevel);
         }
     }
 }

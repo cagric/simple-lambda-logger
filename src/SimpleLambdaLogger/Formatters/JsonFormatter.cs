@@ -8,7 +8,7 @@ using SimpleLambdaLogger.Scopes;
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace SimpleLambdaLogger.Formatters
 {
-    internal class JsonLogFormatter: ILogFormatter
+    internal class JsonFormatter: ILogFormatter
     {
         public string For(DefaultScope scope)
         {

@@ -58,7 +58,7 @@ namespace SimpleLambdaLogger.Scopes
 
             if (ParentScope != null)
             {
-                SimpleLogger.CurrentScope.Value = ParentScope;
+                LoggingContext.ChangeCurrentScope(ParentScope);
                 return;
             }
 
@@ -70,7 +70,7 @@ namespace SimpleLambdaLogger.Scopes
             var logMessage = _formatter.For(this);
             Console.WriteLine(logMessage);
 
-            SimpleLogger.CurrentScope.Value = null; // memory leaks without this line.
+            LoggingContext.ResetCurrentScope();
         }
     }
 }

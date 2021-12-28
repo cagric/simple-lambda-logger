@@ -4,7 +4,7 @@ using SimpleLambdaLogger.Events;
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
 namespace SimpleLambdaLogger.Scopes
 {
-    internal abstract class BaseScope : ILoggerScope
+    internal abstract class BaseScope : IScope
     {
         protected BaseScope ParentScope;
 

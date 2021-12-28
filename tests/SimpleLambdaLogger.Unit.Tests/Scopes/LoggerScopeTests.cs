@@ -65,34 +65,5 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
             actual.Should().NotBeNull();
             actual.MessageTemplate.Should().Be(messageTemplate);
         }
-        
-        [Theory,AutoMoqData]
-        internal void Dispose_WithParentScope_ShouldSetCurrentScope(
-            ILogFormatter formatter,
-            string scopeName,
-            string? contextId,
-            LogEventLevel scopeLogLevel
-            )
-        {
-            var parentScope = new Mock<BaseScope>();
-            var sut = new DefaultScope(formatter, scopeName, contextId, scopeLogLevel, parentScope.Object);
-            sut.Dispose();
-
-            SimpleLogger.CurrentScope.Value.Should().Be(parentScope.Object);
-        }
-        
-        [Theory,AutoMoqData]
-        internal void Dispose_WithoutParentScope_ShouldSetCurrentScopeAsNull(
-            ILogFormatter formatter,
-            string scopeName,
-            string? contextId,
-            LogEventLevel scopeLogLevel
-            )
-        {
-            var sut = new DefaultScope(formatter, scopeName, contextId, scopeLogLevel, null);
-            sut.Dispose();
-        
-            SimpleLogger.CurrentScope.Value.Should().BeNull();
-        }
     }
 }

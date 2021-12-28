@@ -18,25 +18,6 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
             _sut = new SilentScope(parentScope.Object);
         }
 
-        [Fact]
-        public void Dispose_WithParentScope_ShouldSetCurrentScope()
-        {
-            var parentScope = new Mock<BaseScope>();
-            SilentScope sut = new SilentScope(parentScope.Object);
-            sut.Dispose();
-
-            SimpleLogger.CurrentScope.Value.Should().Be(parentScope.Object);
-        }
-        
-        [Fact]
-        public void Dispose_WithoutParentScope_ShouldSetCurrentScopeAsNull()
-        {
-            SilentScope sut = new SilentScope(null);
-            sut.Dispose();
-
-            SimpleLogger.CurrentScope.Value.Should().BeNull();
-        }
-
         [Theory]
         [InlineData(LogEventLevel.Critical, "log message", null)]
         [InlineData(LogEventLevel.Debug, "", null)]

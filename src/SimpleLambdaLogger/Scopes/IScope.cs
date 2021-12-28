@@ -2,7 +2,7 @@ using SimpleLambdaLogger.Events;
 
 namespace SimpleLambdaLogger.Scopes
 {
-    public interface ILoggerScope : IDisposable
+    public interface IScope : IDisposable
     {
         void Log(LogEventLevel logEventLevel, string message, params object[] args);
 

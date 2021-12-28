@@ -20,11 +20,11 @@ namespace SimpleLambdaLogger.Scopes
         {
             if (ParentScope != null)
             {
-                SimpleLogger.CurrentScope.Value = ParentScope;
+                LoggingContext.ChangeCurrentScope(ParentScope);
                 return;
             }
             
-            SimpleLogger.CurrentScope.Value = null; // memory leaks without this line.
+            LoggingContext.ResetCurrentScope();
         }
 
         public override void Log(LogEventLevel logEventLevel, string message, params object[] args)
