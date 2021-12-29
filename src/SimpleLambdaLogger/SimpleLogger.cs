@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using SimpleLambdaLogger.Events;
+using SimpleLambdaLogger.Internal;
 using SimpleLambdaLogger.Scopes;
 
 namespace SimpleLambdaLogger

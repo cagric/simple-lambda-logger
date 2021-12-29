@@ -6,7 +6,7 @@ using SimpleLambdaLogger.Scopes;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
 
-namespace SimpleLambdaLogger
+namespace SimpleLambdaLogger.Internal
 {
     internal static class LoggingContext
     {

@@ -11,7 +11,8 @@ namespace SimpleLambdaLogger.Benchmarks
     {
         public static void Main()
         {
-            BenchmarkRunner.Run<DefaultLoggingRate>();
+            BenchmarkRunner.Run<LoggingRateBenchmarks>();
+            BenchmarkRunner.Run<LogLevelBenchmarks>();
         }
     }
 }

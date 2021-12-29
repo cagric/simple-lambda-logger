@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using SimpleLambdaLogger.Events;
+using SimpleLambdaLogger.Internal;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
