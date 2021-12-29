@@ -1,15 +1,14 @@
 using System;
-using System.Threading;
 using SimpleLambdaLogger.Events;
 using SimpleLambdaLogger.Internal;
 using SimpleLambdaLogger.Scopes;
 
 namespace SimpleLambdaLogger
 {
-    public class SimpleLogger
+    public static class SimpleLogger
     {
         public static void Configure(
-            LogEventLevel logLevel = LogEventLevel.Error,
+            LogEventLevel logLevel = LogEventLevel.Information,
             long loggingRate = 1)
         {
             if (loggingRate < 1)

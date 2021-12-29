@@ -16,7 +16,7 @@ namespace SimpleLambdaLogger.Internal
         private static readonly AsyncLocal<BaseScope> _currentScope = new();
 
         internal static void Initialize(
-            LogEventLevel minLogLevel = LogEventLevel.Error,
+            LogEventLevel minLogLevel = LogEventLevel.Information,
             long loggingRate = 1)
         {
             _minLogLevel = minLogLevel;
