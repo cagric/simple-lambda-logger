@@ -1,10 +1,10 @@
-# SimpleLogger
+# SimpleLambdaLogger
 
-SimpleLogger is a structured and scope-based logging library for AWS Lambda C# functions that output a single JSON log message to the CloudWatch console after every lambda invocations. Logging frequency is configurable, it can write once for every `loggingRate` invocations parameter. It is very easy to use and set up. It can be used even without configuration.
+SimpleLambdaLogger is scope-based and buffered logging library for AWS Lambda C# functions that output a single JSON log message to the CloudWatch console after every lambda invocations. Logging frequency is configurable, it can write once after every certain number of invocations. It is very easy to use and set up. It can be used even without configuration.
 
 ## Getting started
 
-* This is the simplest way to use SimpleLogger without any configuration. The scope has it's own log level and overrides the default log level which is `Information`:
+* This is the simplest way to use SimpleLambdaLogger without any configuration. The scope has it's own log level and overrides the default log level which is `Information`. The output contains `duration` field which shows execution time of each scope in miliseconds. `contextId` field can be used to track each scope by using AwsRequestId or any other correlation id value.
 
 ```csharp
 using SimpleLambdaLogger;
@@ -14,7 +14,7 @@ public class Function
     public string FunctionHandler(
         string input, ILambdaContext context)
     {
-        using (var scope = SimpleLogger.BeginScope<Function>(context.AwsRequestId, LogEventLevel.Trace))
+        using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Trace))
         {
             scope.LogTrace(input);
             var result = input?.ToLower();
@@ -56,7 +56,7 @@ public class Function
     // for the input: "Hello World"
     public string FunctionHandler(string input, ILambdaContext context)
     {
-        using (var scope = SimpleLogger.BeginScope<Function>(context.AwsRequestId, LogEventLevel.Trace))
+        using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Trace))
         {
             scope.LogTrace(input);
             var result = ToLowerCase(input);
@@ -68,7 +68,7 @@ public class Function
 
     public string ToLowerCase(string input)
     {
-        using (var scope = SimpleLogger.BeginScope("ToLowerCase", LogEventLevel.Trace))
+        using (var scope = Scope.Begin("ToLowerCase", LogEventLevel.Trace))
         {
             scope.LogTrace(input);
             var result = input?.ToLower();
@@ -128,7 +128,7 @@ public class Function
     // for the input: "Hello World"
     public string FunctionHandler(string input, ILambdaContext context)
     {
-        using (var scope = SimpleLogger.BeginScope<Function>(context.AwsRequestId, LogEventLevel.Critical))
+        using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Critical))
         {
             scope.LogTrace(input);
             var result = ToLowerCase(input);
@@ -140,7 +140,7 @@ public class Function
 
     public string ToLowerCase(string input)
     {
-        using (var scope = SimpleLogger.BeginScope("ToLowerCase", LogEventLevel.Information))
+        using (var scope = Scope.Begin("ToLowerCase", LogEventLevel.Information))
         {
             scope.LogInformation(input);
             var result = input?.ToLower();
@@ -152,7 +152,7 @@ public class Function
 }
 ```
 
-* The inner scope satisfies with the minimum log level:
+The inner scope satisfies with the minimum log level:
 
 ```json
 {
@@ -198,13 +198,13 @@ public class Function
 {
     public Function()
     {
-        SimpleLogger.Configure(logLevel: LogEventLevel.Trace, loggingRate: 10);
+        Scope.Configure(logLevel: LogEventLevel.Trace, loggingRate: 10);
     }
     
     // for the input: "Hello World"
     public string FunctionHandler(string input, ILambdaContext context)
     {
-        using (var scope = SimpleLogger.BeginScope<Function>(context.AwsRequestId))
+        using (var scope = Scope.Begin<Function>(context.AwsRequestId))
         {
             scope.LogInformation(input);
             var result = input.ToLower();
@@ -244,7 +244,7 @@ public class Function
     // for the input: "Hello World"
     public async Task<string> FunctionHandler(string input, ILambdaContext context)
     {
-        using (var scope = SimpleLogger.BeginScope<Function>(context.AwsRequestId, LogEventLevel.Trace))
+        using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Trace))
         {
             scope.LogTrace(input);
             await Task.WhenAll(ToLower(input), ToUpper(input));
@@ -254,7 +254,7 @@ public class Function
 
     public async Task ToLower(string input)
     {
-        using (var scope = SimpleLogger.BeginScope("ToLower"))
+        using (var scope = Scope.Begin("ToLower"))
         {
             scope.LogTrace(input.ToLower());
         }
@@ -262,7 +262,7 @@ public class Function
     
     public async Task ToUpper(string input)
     {
-        using (var scope = SimpleLogger.BeginScope("ToUpper"))
+        using (var scope = Scope.Begin("ToUpper"))
         {
             scope.LogTrace(input.ToUpper());
         }

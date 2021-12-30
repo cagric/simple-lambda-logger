@@ -4,7 +4,7 @@ using SimpleLambdaLogger.Scopes;
 
 namespace SimpleLambdaLogger
 {
-    public static class SimpleLoggerExtensions
+    public static class ScopeExtensions
     {
         public static void LogTrace(this IScope logger, string message, params object[] args)
         {
