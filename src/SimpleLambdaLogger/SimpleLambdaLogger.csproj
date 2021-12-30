@@ -4,5 +4,14 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>9</LangVersion>
+        <Authors>Cagri Cakir</Authors>
+        <Description>SimpleLambdaLogger is scope-based and buffered logging library for AWS Lambda C# functions that output a single JSON log message to the CloudWatch console after every lambda invocations</Description>
+        <PackageProjectUrl>https://github.com/cagric/simple-lambda-logger</PackageProjectUrl>
+        <PackageTags>console;json;aws-lambda;dotnet;lambda-functions;logging-library;cloudwatch-logs;scope</PackageTags>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>SimpleLambdaLogger</PackageId>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/cagric/simple-lambda-logger</RepositoryUrl>
     </PropertyGroup>
 </Project>

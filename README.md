@@ -1,18 +1,18 @@
 # SimpleLambdaLogger
 
-SimpleLambdaLogger is scope-based and buffered logging library for AWS Lambda C# functions that output a single JSON log message to the CloudWatch console after every lambda invocations. Logging frequency is configurable, it can write once after every certain number of invocations. It is very easy to use and set up. It can be used even without configuration.
+**SimpleLambdaLogger** is a scope-based and buffered logging library for AWS Lambda C# functions that output a single JSON log message to the CloudWatch console after every lambda invocation. Logging frequency is configurable, it can write once after every certain number of invocations. It is very easy to use and set up. It can be used even without configuration.
 
 ## Getting started
 
-* This is the simplest way to use SimpleLambdaLogger without any configuration. The scope has it's own log level and overrides the default log level which is `Information`. The output contains `duration` field which shows execution time of each scope in miliseconds. `contextId` field can be used to track each scope by using AwsRequestId or any other correlation id value.
+* This is the simplest way to use **SimpleLambdaLogger** without any configuration. The scope has it's own log level and overrides the default log level which is `Information`. The output contains `duration` field which shows execution time of each scope in miliseconds. `contextId` field can be used to track each scope by using AwsRequestId or any other correlation id value.
 
 ```csharp
 using SimpleLambdaLogger;
 
 public class Function
 {
-    public string FunctionHandler(
-        string input, ILambdaContext context)
+    // input: "Hello World"
+    public string FunctionHandler(string input, ILambdaContext context)
     {
         using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Trace))
         {
@@ -53,7 +53,7 @@ using SimpleLambdaLogger;
 
 public class Function
 {    
-    // for the input: "Hello World"
+    // input: "Hello World"
     public string FunctionHandler(string input, ILambdaContext context)
     {
         using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Trace))
@@ -125,7 +125,7 @@ using SimpleLambdaLogger;
 
 public class Function
 {
-    // for the input: "Hello World"
+    // input: "Hello World"
     public string FunctionHandler(string input, ILambdaContext context)
     {
         using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Critical))
@@ -201,7 +201,7 @@ public class Function
         Scope.Configure(logLevel: LogEventLevel.Trace, loggingRate: 10);
     }
     
-    // for the input: "Hello World"
+    // input: "Hello World"
     public string FunctionHandler(string input, ILambdaContext context)
     {
         using (var scope = Scope.Begin<Function>(context.AwsRequestId))
@@ -241,7 +241,7 @@ It outputs once for every 10 invocations:
 ```csharp
 public class Function
 {
-    // for the input: "Hello World"
+    // input: "Hello World"
     public async Task<string> FunctionHandler(string input, ILambdaContext context)
     {
         using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Trace))
@@ -307,3 +307,8 @@ public class Function
     ]
 }
 ```
+
+## Credits
+
+<a target="_blank" href="https://www.linkedin.com/in/cagri-cakir-8ba45955/"><img src="https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&amp;logo=linkedin&amp;logoColor=white" style="max-width: 100%;"></a>
+<a target="_blank" href="https://twitter.com/cagrica"><img src="https://img.shields.io/badge/twitter-%231DA1F2.svg?style=for-the-badge&logo=Twitter&logoColor=white" style="max-width: 100%;"></a>
