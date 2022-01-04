@@ -19,11 +19,14 @@ namespace SimpleLambdaLogger.Formatters
             return result;
         }
         
-        private StringBuilder CreateLog(StringBuilder builder, DefaultScope scope)
+        private void CreateLog(StringBuilder builder, DefaultScope scope, string? parentScopeName = null)
         {
-            builder.AppendFormat("{{\"scope\": \"{0}\",", scope.Name);
-            builder.AppendFormat("\"duration\": {0}", scope.Duration.ToString());
-
+            var fullScopeName = !string.IsNullOrEmpty(parentScopeName) ? $"{parentScopeName}.{scope.Name}" : scope.Name;
+            builder.AppendFormat("{{\"scope\": \"{0}\",", fullScopeName);
+            builder.AppendFormat("\"duration\": {0},", scope.Duration.ToString());
+            builder.AppendFormat("\"success\": {0}", scope.Success.ToString().ToLower());
+            
+            
             if (!string.IsNullOrEmpty(scope.ContextId))
             {
                 builder.AppendFormat(",\"contextId\": \"{0}\"", scope.ContextId);
@@ -71,7 +74,7 @@ namespace SimpleLambdaLogger.Formatters
                 for (int i = 0; i < scope.ChildScopes.Count; i++)
                 {
                     var currentChildScope = scope.ChildScopes.ElementAt(i);
-                    CreateLog(builder, currentChildScope);
+                    CreateLog(builder, currentChildScope, fullScopeName);
                     if (i < scope.ChildScopes.Count - 1)
                     {
                         builder.Append(",");
@@ -81,7 +84,6 @@ namespace SimpleLambdaLogger.Formatters
                 builder.Append("]");
             }
             builder.Append("}");
-            return builder;
         }
     }
 }

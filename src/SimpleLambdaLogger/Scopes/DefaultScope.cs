@@ -17,9 +17,12 @@ namespace SimpleLambdaLogger.Scopes
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
         private readonly ILogFormatter _formatter;
         private readonly LogEventLevel _scopeLogLevel;
+        private readonly LogEventLevel _minFailureLogLevel;
         private bool WriteLogs => _maxLogLevel >= _scopeLogLevel || ChildScopes.Any(childScope => childScope.WriteLogs);
         private LogEventLevel _maxLogLevel;
 
+        public bool Success => !(_maxLogLevel >=_minFailureLogLevel  || ChildScopes.Any(childScope => !childScope.Success));
+        
         public string Name { get; protected set; }
 
         public string? ContextId { get; protected set; }
@@ -33,12 +36,14 @@ namespace SimpleLambdaLogger.Scopes
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel,
+            LogEventLevel minFailureLogLevel,
             BaseScope parentScope)
         {
             _formatter = formatter;
             Name = scopeName;
             ContextId = contextId;
             _scopeLogLevel = scopeLogLevel;
+            _minFailureLogLevel = minFailureLogLevel;
 
             ParentScope = parentScope;
             ParentScope?.ChildScopes.Add(this);

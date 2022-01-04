@@ -9,6 +9,7 @@ namespace SimpleLambdaLogger
     {
         public static void Configure(
             LogEventLevel logLevel = LogEventLevel.Information,
+            LogEventLevel minFailureLogLevel = LogEventLevel.Error,
             long loggingRate = 1)
         {
             if (loggingRate < 1)
@@ -16,7 +17,11 @@ namespace SimpleLambdaLogger
                 throw new ArgumentException(nameof(loggingRate));
             }
 
-            LoggingContext.Initialize(logLevel, loggingRate);
+            LoggingContext.Initialize(
+                logLevel, 
+                minFailureLogLevel,
+                loggingRate
+                );
         }
 
         public static IScope Begin<TScope>()
@@ -38,22 +43,7 @@ namespace SimpleLambdaLogger
         {
             return LoggingContext.CreateScope(scope, contextId);
         }
-
-        public static IScope Begin<TScope>(LogEventLevel scopeLogLevel)
-        {
-            return LoggingContext.CreateScope(typeof(TScope).Name, null, scopeLogLevel);
-        }
-
-        public static IScope Begin(string scope, LogEventLevel scopeLogLevel)
-        {
-            return LoggingContext.CreateScope(scope, null, scopeLogLevel);
-        }
-
-        public static IScope Begin<TScope>(string? contextId, LogEventLevel scopeLogLevel)
-        {
-            return LoggingContext.CreateScope(typeof(TScope).Name, contextId, scopeLogLevel);
-        }
-
+        
         public static IScope Begin(string scope, string? contextId, LogEventLevel scopeLogLevel)
         {
             return LoggingContext.CreateScope(scope, contextId, scopeLogLevel);

@@ -9,10 +9,15 @@ namespace SimpleLambdaLogger.Benchmarks
         runtimeMoniker: RuntimeMoniker.NetCoreApp31)]
     public class LogLevelBenchmarks
     {
+        public LogLevelBenchmarks()
+        {
+            Scope.Configure(logLevel: LogEventLevel.Error);
+        }
+        
         [Benchmark(Description = "Single scope with log level lower than min log level")]
         public void SingleScopeLowLogLevel()
         {
-            using (var scope = Scope.Begin("test scope",LogEventLevel.Error))
+            using (var scope = Scope.Begin("test scope"))
             {
                 scope.Log(LogEventLevel.Information, "log message");
             }
@@ -21,7 +26,7 @@ namespace SimpleLambdaLogger.Benchmarks
         [Benchmark(Description = "3 Nested scopes with log level lower than min log level")]
         public void NestedScopesLowLogLevel()
         {
-            using (var scope = Scope.Begin("test scope",LogEventLevel.Error))
+            using (var scope = Scope.Begin("test scope"))
             {
                 scope.Log(LogEventLevel.Trace, "log message");
                 
@@ -40,7 +45,7 @@ namespace SimpleLambdaLogger.Benchmarks
         [Benchmark(Description = "Single scope with log level higher than min log level")]
         public void SingleScopeHighLogLevel()
         {
-            using (var scope = Scope.Begin("test scope", LogEventLevel.Information))
+            using (var scope = Scope.Begin("test scope"))
             {
                 scope.Log(LogEventLevel.Error, "log message");
             }
@@ -49,15 +54,15 @@ namespace SimpleLambdaLogger.Benchmarks
         [Benchmark(Description = "3 Nested scopes with log level higher than min log level")]
         public void NestedScopesHighLogLevel()
         {
-            using (var scope = Scope.Begin("test scope", LogEventLevel.Information))
+            using (var scope = Scope.Begin("test scope"))
             {
                 scope.Log(LogEventLevel.Trace, "log message");
 
-                using (var scope2 = Scope.Begin("inner scope", LogEventLevel.Error))
+                using (var scope2 = Scope.Begin("inner scope"))
                 {
                     scope2.Log(LogEventLevel.Error, "log message");
 
-                    using (var scope3 = Scope.Begin("inner scope", LogEventLevel.Error))
+                    using (var scope3 = Scope.Begin("inner scope"))
                     {
                         scope3.Log(LogEventLevel.Debug, "log message");
                     }
