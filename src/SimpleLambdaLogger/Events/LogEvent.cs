@@ -14,21 +14,25 @@ namespace SimpleLambdaLogger.Events
             Exception exception,
             params object[] args)
         {
-            LogEventLevel = logEventLevel;
+            Level = logEventLevel;
             Timestamp = timestamp;
-            MessageTemplate = messageTemplate;
-            Exception = exception;
-            Args = args;
+            Exception = exception?.ToString();
+            if (!string.IsNullOrEmpty(messageTemplate) && args != null && args.Length > 0)
+            {
+                Message = string.Format(messageTemplate, args);
+            }
+            else
+            {
+                Message = messageTemplate;
+            }
         }
 
-        public LogEventLevel LogEventLevel { get; }
+        public LogEventLevel Level { get; }
 
-        public string MessageTemplate { get; }
+        public string Message { get; }
 
         public DateTimeOffset Timestamp { get; }
 
-        public Exception Exception { get; }
-        
-        public object[] Args { get; }
+        public string Exception { get; }
     }
 }

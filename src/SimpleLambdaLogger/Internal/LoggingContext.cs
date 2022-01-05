@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using SimpleLambdaLogger.Events;
-using SimpleLambdaLogger.Formatters;
 using SimpleLambdaLogger.Scopes;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
@@ -45,7 +44,7 @@ namespace SimpleLambdaLogger.Internal
             
             BaseScope scope = _loggingRate != 1 && _invocationCount % _loggingRate != 0
                 ? new SilentScope(_currentScope.Value)
-                : new DefaultScope(new JsonFormatter() ,scopeName, contextId, scopeLogLevel, minFailureLogLevel, _currentScope.Value);
+                : new DefaultScope(scopeName, contextId, scopeLogLevel, minFailureLogLevel, _currentScope.Value);
             
             _currentScope.Value = scope;
             

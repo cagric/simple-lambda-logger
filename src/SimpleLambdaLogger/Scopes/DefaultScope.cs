@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using SimpleLambdaLogger.Events;
-using SimpleLambdaLogger.Formatters;
 using SimpleLambdaLogger.Internal;
 
 [assembly: InternalsVisibleTo("SimpleLambdaLogger.Unit.Tests")]
@@ -15,10 +15,10 @@ namespace SimpleLambdaLogger.Scopes
     internal class DefaultScope : BaseScope
     {
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-        private readonly ILogFormatter _formatter;
         private readonly LogEventLevel _scopeLogLevel;
         private readonly LogEventLevel _minFailureLogLevel;
         private bool WriteLogs => _maxLogLevel >= _scopeLogLevel || ChildScopes.Any(childScope => childScope.WriteLogs);
+        
         private LogEventLevel _maxLogLevel;
 
         public bool Success => !(_maxLogLevel >=_minFailureLogLevel  || ChildScopes.Any(childScope => !childScope.Success));
@@ -32,14 +32,12 @@ namespace SimpleLambdaLogger.Scopes
         public long Duration => _stopwatch.ElapsedMilliseconds;
 
         public DefaultScope(
-            ILogFormatter formatter,
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel,
             LogEventLevel minFailureLogLevel,
             BaseScope parentScope)
         {
-            _formatter = formatter;
             Name = scopeName;
             ContextId = contextId;
             _scopeLogLevel = scopeLogLevel;
@@ -76,7 +74,7 @@ namespace SimpleLambdaLogger.Scopes
                 return;
             }
 
-            var logMessage = _formatter.For(this);
+            var logMessage = JsonSerializer.Serialize(this, Settings.SerializationOptions);
             Console.WriteLine(logMessage);
 
             LoggingContext.ResetCurrentScope();

@@ -1,20 +1,21 @@
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using SimpleLambdaLogger.Events;
 
 namespace SimpleLambdaLogger.Internal
 {
     internal static class Settings
     {
-        internal static readonly IReadOnlyDictionary<LogEventLevel, string> LogLevelsLookup =
-            new Dictionary<LogEventLevel, string>
+        internal static readonly JsonSerializerOptions SerializationOptions = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters =
             {
-                {LogEventLevel.Trace, "Trace"},
-                {LogEventLevel.Debug, "Debug"},
-                {LogEventLevel.Information, "Information"},
-                {LogEventLevel.Warning, "Warning"},
-                {LogEventLevel.Error, "Error"},
-                {LogEventLevel.Critical, "Critical"}
-            };
+                new JsonStringEnumConverter(null)
+            }
+        };
     }
 }
 

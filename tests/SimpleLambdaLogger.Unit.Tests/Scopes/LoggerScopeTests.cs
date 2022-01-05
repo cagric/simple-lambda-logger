@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using Moq;
 using SimpleLambdaLogger.Events;
-using SimpleLambdaLogger.Formatters;
 using SimpleLambdaLogger.Scopes;
 using SimpleLambdaLogger.Unit.Tests.Data;
 using Xunit;
@@ -55,6 +54,7 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
             BaseScope parentScope
         )
         {
+            var expected = "Message with 3 parameters: parameter 1, parameter 2 and parameter 3";
             var messageTemplate = "Message with 3 parameters: {0}, {1} and {2}";
             var arguments = new object[3] {"parameter 1", "parameter 2", "parameter 3" };
 
@@ -63,7 +63,7 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
             sut.Logs.Count.Should().Be(1);
             var actual = sut.Logs.FirstOrDefault();
             actual.Should().NotBeNull();
-            actual.MessageTemplate.Should().Be(messageTemplate);
+            actual.Message.Should().Be(expected);
         }
     }
 }
