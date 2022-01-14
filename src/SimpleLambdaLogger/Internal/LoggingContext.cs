@@ -13,7 +13,8 @@ namespace SimpleLambdaLogger.Internal
         private static LogEventLevel _minLogLevel = LogEventLevel.Error;
         private static LogEventLevel _minFailureLogLevel = LogEventLevel.Error;
         private static long _loggingRate = 1;
-        private static readonly AsyncLocal<BaseScope> _currentScope = new();
+        private static readonly AsyncLocal<DefaultScope> _currentScope = new();
+        private static bool _isSilentScope;
 
         internal static void Initialize(
             LogEventLevel minLogLevel = LogEventLevel.Information,
@@ -27,37 +28,41 @@ namespace SimpleLambdaLogger.Internal
     
         internal static IScope CreateScope(string scopeName, string? contextId)
         {
-            return CreateScope(scopeName, contextId, _minLogLevel);
+            return CreateScope(scopeName, contextId, _minLogLevel, _minFailureLogLevel);
         }
 
         internal static IScope CreateScope(string scopeName, string? contextId, LogEventLevel scopeLogLevel)
         {
-            return CreateScope(scopeName, contextId, _minLogLevel, _minFailureLogLevel);
+            return CreateScope(scopeName, contextId, scopeLogLevel, _minFailureLogLevel);
         }
         
         private static IScope CreateScope(string scopeName, string? contextId, LogEventLevel scopeLogLevel, LogEventLevel minFailureLogLevel)
         {
-            if (_currentScope.Value == null)
+            if (_currentScope.Value == null && _isSilentScope == false)
             {
                 _invocationCount++;
             }
+
+            if (_loggingRate != 1 && _invocationCount % _loggingRate != 0)
+            {
+                var scope = new SilentScope(!_isSilentScope);
+                _isSilentScope = true;
+                return scope;
+            }
             
-            BaseScope scope = _loggingRate != 1 && _invocationCount % _loggingRate != 0
-                ? new SilentScope(_currentScope.Value)
-                : new DefaultScope(scopeName, contextId, scopeLogLevel, minFailureLogLevel, _currentScope.Value);
+            _currentScope.Value = new DefaultScope(scopeName, contextId, scopeLogLevel, minFailureLogLevel, _currentScope.Value);
             
-            _currentScope.Value = scope;
-            
-            return scope;
+            return _currentScope.Value;
         }
         
-        internal static void ChangeCurrentScope(BaseScope scope)
+        internal static void ChangeCurrentScope(DefaultScope scope)
         {
             _currentScope.Value = scope;
         }
         
         internal static void ResetCurrentScope()
         {
+            _isSilentScope = false;
             ChangeCurrentScope(null);
         }
     }   

@@ -14,8 +14,8 @@ namespace SimpleLambdaLogger.Unit.Tests.Scopes
 
         public SilentLoggerScopeTests()
         {
-            Mock<SilentScope> parentScope = new Mock<SilentScope>();
-            _sut = new SilentScope(parentScope.Object);
+            //Mock<SilentScope> parentScope = new Mock<SilentScope>();
+            _sut = new SilentScope(true);
         }
 
         [Theory]

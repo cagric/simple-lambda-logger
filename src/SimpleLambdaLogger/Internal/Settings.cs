@@ -9,8 +9,8 @@ namespace SimpleLambdaLogger.Internal
     {
         internal static readonly JsonSerializerOptions SerializationOptions = new()
         {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            IgnoreNullValues = true,
             Converters =
             {
                 new JsonStringEnumConverter(null)
