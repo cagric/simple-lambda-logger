@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>9</LangVersion>
         <Authors>Cagri Cakir</Authors>
@@ -14,7 +13,4 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/cagric/simple-lambda-logger</RepositoryUrl>
     </PropertyGroup>
-    <ItemGroup>
-      <PackageReference Include="System.Text.Json" Version="6.0.1" />
-    </ItemGroup>
 </Project>

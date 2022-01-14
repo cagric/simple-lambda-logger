@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using SimpleLambdaLogger.Events;
 
 namespace SimpleLambdaLogger.Scopes

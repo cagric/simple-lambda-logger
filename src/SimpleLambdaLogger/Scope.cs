@@ -1,7 +1,7 @@
 using System;
 using SimpleLambdaLogger.Events;
-using SimpleLambdaLogger.Internal;
 using SimpleLambdaLogger.Scopes;
+using static SimpleLambdaLogger.Internal.LoggingContext;
 
 namespace SimpleLambdaLogger
 {
@@ -17,36 +17,25 @@ namespace SimpleLambdaLogger
                 throw new ArgumentException(nameof(loggingRate));
             }
 
-            LoggingContext.Initialize(
+            Initialize(
                 logLevel, 
                 minFailureLogLevel,
                 loggingRate
                 );
         }
 
-        public static IScope Begin<TScope>()
-        {
-            return LoggingContext.CreateScope(typeof(TScope).Name, null);
-        }
+        public static IScope Begin<TScope>() => CreateScope(typeof(TScope).Name, null);
 
-        public static IScope Begin(string scope)
-        {
-            return LoggingContext.CreateScope(scope, null);
-        }
+        public static IScope Begin(string scope) => CreateScope(scope, null);
 
-        public static IScope Begin<TScope>(string? contextId)
-        {
-            return LoggingContext.CreateScope(typeof(TScope).Name, contextId);
-        }
+        public static IScope Begin(string scope, LogEventLevel scopeLogLevel) => CreateScope(scope, null, scopeLogLevel);
 
-        public static IScope Begin(string scope, string? contextId)
-        {
-            return LoggingContext.CreateScope(scope, contextId);
-        }
-        
-        public static IScope Begin(string scope, string? contextId, LogEventLevel scopeLogLevel)
-        {
-            return LoggingContext.CreateScope(scope, contextId, scopeLogLevel);
-        }
+        public static IScope Begin<TScope>(string? contextId) => CreateScope(typeof(TScope).Name, contextId);
+
+        public static IScope Begin(string scope, string? contextId) => CreateScope(scope, contextId);
+
+        public static IScope Begin<TScope>(string? contextId, LogEventLevel scopeLogLevel) => CreateScope(typeof(TScope).Name, contextId, scopeLogLevel);
+
+        public static IScope Begin(string scope, string? contextId, LogEventLevel scopeLogLevel) => CreateScope(scope, contextId, scopeLogLevel);
     }
 }

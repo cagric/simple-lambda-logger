@@ -17,34 +17,42 @@ namespace SimpleLambdaLogger.Scopes
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
         private readonly LogEventLevel _scopeLogLevel;
         private readonly LogEventLevel _minFailureLogLevel;
-        private bool WriteLogs => _maxLogLevel >= _scopeLogLevel || ChildScopes.Any(childScope => childScope.WriteLogs);
+        private bool WriteLogs => _maxLogLevel >= _scopeLogLevel || Scopes.Any(childScope => childScope.WriteLogs);
         
         private LogEventLevel _maxLogLevel;
 
-        public bool Success => !(_maxLogLevel >=_minFailureLogLevel  || ChildScopes.Any(childScope => !childScope.Success));
+        private readonly DefaultScope _parentScope;
         
-        public string Name { get; protected set; }
-
+        public string Scope { get; protected set; }
+        
+        public long Duration => _stopwatch.ElapsedMilliseconds;
+        
         public string? ContextId { get; protected set; }
-
+        
+        public bool Success => !(_maxLogLevel >=_minFailureLogLevel  || Scopes.Any(childScope => !childScope.Success));
+        
         public ICollection<LogEvent> Logs { get; } = new List<LogEvent>();
 
-        public long Duration => _stopwatch.ElapsedMilliseconds;
+        public ICollection<DefaultScope> Scopes { get; } = new List<DefaultScope>();
 
+        public DefaultScope()
+        {
+        }
+        
         public DefaultScope(
             string scopeName,
             string? contextId,
             LogEventLevel scopeLogLevel,
             LogEventLevel minFailureLogLevel,
-            BaseScope parentScope)
+            DefaultScope parentScope)
         {
-            Name = scopeName;
-            ContextId = contextId;
+            Scope = parentScope != null ? $"{parentScope.Scope}.{scopeName}" : scopeName;
+            ContextId = contextId ?? parentScope?.ContextId;
             _scopeLogLevel = scopeLogLevel;
             _minFailureLogLevel = minFailureLogLevel;
 
-            ParentScope = parentScope;
-            ParentScope?.ChildScopes.Add(this);
+            _parentScope = parentScope;
+            _parentScope?.Scopes.Add(this);
         }
 
         public override void Log(LogEventLevel logEventLevel, string message, params object[] args)
@@ -63,9 +71,9 @@ namespace SimpleLambdaLogger.Scopes
         {
             _stopwatch.Stop();
 
-            if (ParentScope != null)
+            if (_parentScope != null)
             {
-                LoggingContext.ChangeCurrentScope(ParentScope);
+                LoggingContext.ChangeCurrentScope(_parentScope);
                 return;
             }
 
@@ -75,7 +83,7 @@ namespace SimpleLambdaLogger.Scopes
             }
 
             var logMessage = JsonSerializer.Serialize(this, Settings.SerializationOptions);
-            Console.WriteLine(logMessage);
+            //Console.WriteLine(logMessage);
 
             LoggingContext.ResetCurrentScope();
         }

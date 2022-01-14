@@ -29,20 +29,65 @@ public class Function
 ```json
 {
     "scope": "Function",
-    "duration": 1,
-    "contextId": "45134dc7-e432-488b-b8fe-f6622f3cd373",
+    "duration": 2,
+    "contextId": "5a02102e-d4b1-4934-b8e6-59ce91e0e8dc",
+    "success": true,
     "logs": [
         {
             "level": "Trace",
-            "created": "12/29/2021 9:22:11 PM +00:00",
-            "message": "Hello World"
+            "message": "Hello World",
+            "timestamp": "2022-01-17T20:15:19.1193613+00:00"
         },
         {
             "level": "Trace",
-            "created": "12/29/2021 9:22:11 PM +00:00",
-            "message": "hello world"
+            "message": "hello world",
+            "timestamp": "2022-01-17T20:15:19.8179792+00:00"
         }
-    ]
+    ],
+    "scopes": []
+}
+```
+* `success` field depends on the min failure log level. By default, it is `Error`
+
+```csharp
+using SimpleLambdaLogger;
+
+public class Function
+{
+    // for the input: "Hello World"
+    public async Task<string> FunctionHandler(string input, ILambdaContext context)
+    {
+        using (var scope = Scope.Begin<Function>(context.AwsRequestId, LogEventLevel.Trace))
+        {
+            scope.LogTrace(input);
+            var result = input?.ToLower();
+            scope.LogError(result);
+
+            return result;
+        }
+    }
+}
+```
+
+```json
+{
+    "scope": "Function",
+    "duration": 640,
+    "contextId": "053a4e58-c8ea-4dbb-af93-1a81c0f65dac",
+    "success": false,
+    "logs": [
+        {
+            "level": "Trace",
+            "message": "Hello World",
+            "timestamp": "2022-01-17T21:49:13.7835968+00:00"
+        },
+        {
+            "level": "Error",
+            "message": "hello world",
+            "timestamp": "2022-01-17T21:49:14.4236724+00:00"
+        }
+    ],
+    "scopes": []
 }
 ```
 
@@ -83,36 +128,40 @@ public class Function
 ```json
 {
     "scope": "Function",
-    "duration": 138,
-    "contextId": "39e09942-0360-46ec-a5e6-a33a86d7943b",
+    "duration": 639,
+    "contextId": "82cca306-15c6-450d-9059-65d64b1c134d",
+    "success": true,
     "logs": [
         {
             "level": "Trace",
-            "created": "12/29/2021 9:37:09 PM +00:00",
-            "message": "Hello World"
+            "message": "Hello World",
+            "timestamp": "2022-01-17T22:37:22.9324228+00:00"
         },
         {
             "level": "Trace",
-            "created": "12/29/2021 9:37:09 PM +00:00",
-            "message": "hello world"
+            "message": "hello world",
+            "timestamp": "2022-01-17T22:37:23.5714309+00:00"
         }
     ],
-    "childScopes": [
+    "scopes": [
         {
-            "scope": "ToLowerCase",
-            "duration": 99,
+            "scope": "Function.ToLowerCase",
+            "duration": 479,
+            "contextId": "82cca306-15c6-450d-9059-65d64b1c134d",
+            "success": true,
             "logs": [
                 {
                     "level": "Trace",
-                    "created": "12/29/2021 9:37:09 PM +00:00",
-                    "message": "Hello World"
+                    "message": "Hello World",
+                    "timestamp": "2022-01-17T22:37:23.0919952+00:00"
                 },
                 {
                     "level": "Trace",
-                    "created": "12/29/2021 9:37:09 PM +00:00",
-                    "message": "hello world"
+                    "message": "hello world",
+                    "timestamp": "2022-01-17T22:37:23.5710483+00:00"
                 }
-            ]
+            ],
+            "scopes": []
         }
     ]
 }
@@ -158,35 +207,39 @@ The inner scope satisfies with the minimum log level:
 {
     "scope": "Function",
     "duration": 0,
-    "contextId": "35b775a2-7786-45a4-83e1-0c28e58b25ec",
+    "contextId": "94ae51c0-a41d-4010-b6a4-576cb05cafaf",
+    "success": true,
     "logs": [
         {
             "level": "Trace",
-            "created": "12/29/2021 10:03:11 PM +00:00",
-            "message": "Hello World"
+            "message": "Hello World",
+            "timestamp": "2022-01-17T22:53:59.4181365+00:00"
         },
         {
             "level": "Trace",
-            "created": "12/29/2021 10:03:11 PM +00:00",
-            "message": "hello world"
+            "message": "hello world",
+            "timestamp": "2022-01-17T22:53:59.4182013+00:00"
         }
     ],
-    "childScopes": [
+    "scopes": [
         {
-            "scope": "ToLowerCase",
+            "scope": "Function.ToLowerCase",
             "duration": 0,
+            "contextId": "94ae51c0-a41d-4010-b6a4-576cb05cafaf",
+            "success": true,
             "logs": [
                 {
                     "level": "Information",
-                    "created": "12/29/2021 10:03:11 PM +00:00",
-                    "message": "Hello World"
+                    "message": "Hello World",
+                    "timestamp": "2022-01-17T22:53:59.4181869+00:00"
                 },
                 {
                     "level": "Information",
-                    "created": "12/29/2021 10:03:11 PM +00:00",
-                    "message": "hello world"
+                    "message": "hello world",
+                    "timestamp": "2022-01-17T22:53:59.4181972+00:00"
                 }
-            ]
+            ],
+            "scopes": []
         }
     ]
 }
@@ -220,20 +273,22 @@ It outputs once for every 10 invocations:
 ```json
 {
     "scope": "Function",
-    "duration": 3,
-    "contextId": "287d91a0-ad07-4a98-8b42-1d92ca44f2f0",
+    "duration": 0,
+    "contextId": "b1557c4d-42d7-41e3-afaa-471870f6971a",
+    "success": true,
     "logs": [
         {
             "level": "Information",
-            "created": "12/29/2021 10:08:53 PM +00:00",
-            "message": "Hello World"
+            "message": "Hello World",
+            "timestamp": "2022-01-17T22:57:29.6560841+00:00"
         },
         {
             "level": "Information",
-            "created": "12/29/2021 10:08:53 PM +00:00",
-            "message": "hello world"
+            "message": "hello world",
+            "timestamp": "2022-01-17T22:57:29.656128+00:00"
         }
-    ]
+    ],
+    "scopes": []
 }
 ```
 
@@ -272,37 +327,44 @@ public class Function
 ```json
 {
     "scope": "Function",
-    "duration": 142,
-    "contextId": "540eced3-d78a-4ba2-af42-c4360c72744e",
+    "duration": 680,
+    "contextId": "c2b457a8-7e69-45bc-b585-f4a52c95e261",
+    "success": true,
     "logs": [
         {
             "level": "Trace",
-            "created": "12/29/2021 10:34:32 PM +00:00",
-            "message": "Hello World"
+            "message": "Hello World",
+            "timestamp": "2022-01-17T23:26:24.4333478+00:00"
         }
     ],
-    "childScopes": [
+    "scopes": [
         {
-            "scope": "ToLower",
-            "duration": 103,
+            "scope": "Function.ToLower",
+            "duration": 498,
+            "contextId": "c2b457a8-7e69-45bc-b585-f4a52c95e261",
+            "success": true,
             "logs": [
                 {
                     "level": "Trace",
-                    "created": "12/29/2021 10:34:32 PM +00:00",
-                    "message": "hello world"
+                    "message": "hello world",
+                    "timestamp": "2022-01-17T23:26:25.1119557+00:00"
                 }
-            ]
+            ],
+            "scopes": []
         },
         {
-            "scope": "ToUpper",
+            "scope": "Function.ToUpper",
             "duration": 0,
+            "contextId": "c2b457a8-7e69-45bc-b585-f4a52c95e261",
+            "success": true,
             "logs": [
                 {
                     "level": "Trace",
-                    "created": "12/29/2021 10:34:32 PM +00:00",
-                    "message": "HELLO WORLD"
+                    "message": "HELLO WORLD",
+                    "timestamp": "2022-01-17T23:26:25.1130251+00:00"
                 }
-            ]
+            ],
+            "scopes": []
         }
     ]
 }

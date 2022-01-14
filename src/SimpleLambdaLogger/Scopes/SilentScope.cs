@@ -9,24 +9,19 @@ namespace SimpleLambdaLogger.Scopes
 {
     internal class SilentScope : BaseScope
     {
-        public SilentScope()
+        private readonly bool _isParent;
+
+        public SilentScope(bool isParent = false)
         {
-        }
-        
-        public SilentScope(BaseScope parentScope)
-        {
-            ParentScope = parentScope;
+            _isParent = isParent;
         }
 
         public override void Dispose()
         {
-            if (ParentScope != null)
+            if (_isParent)
             {
-                LoggingContext.ChangeCurrentScope(ParentScope);
-                return;
+                LoggingContext.ResetCurrentScope();
             }
-            
-            LoggingContext.ResetCurrentScope();
         }
 
         public override void Log(LogEventLevel logEventLevel, string message, params object[] args)
