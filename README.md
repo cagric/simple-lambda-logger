@@ -1,8 +1,23 @@
 # SimpleLambdaLogger
 
+**This is a prerelease version of SimpleLambdaLogger.**
+
 **SimpleLambdaLogger** is a scope-based and buffered logging library for AWS Lambda C# functions that output a single JSON log message to the CloudWatch console after every lambda invocation. Logging frequency is configurable, it can write once after every certain number of invocations. It is very easy to use and set up. It can be used even without configuration.
 
 ## Getting started
+
+First, add [NuGet library](https://www.nuget.org/packages/SimpleLambdaLogger) into your project:
+
+```
+dotnet add package SimpleLambdaLogger --version 1.0.0-preview002
+```
+
+or
+
+```
+Install-Package SimpleLambdaLogger -Version 1.0.0-preview002
+```
+
 
 * This is the simplest way to use **SimpleLambdaLogger** without any configuration. The scope has it's own log level and overrides the default log level which is `Information`. The output contains `duration` field which shows execution time of each scope in miliseconds. `contextId` field can be used to track each scope by using AwsRequestId or any other correlation id value.
 
